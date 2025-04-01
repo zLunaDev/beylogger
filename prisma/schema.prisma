@@ -11,59 +11,111 @@ model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String
+  username  String?
   isAdmin   Boolean  @default(false)
   createdAt DateTime @default(now())
-
-  combos Combo[]
+  updatedAt DateTime @default(now())
+  collection UserCollection[]
+  combos    Combo[]
 }
 
-model Part {
+model Blade {
   id   Int      @id @default(autoincrement())
   name String
-  type PartType
 
-  images               PartImage[]
-  defaultCombosBlade   DefaultCombo[] @relation("Blade")
-  defaultCombosRatchet DefaultCombo[] @relation("Ratchet")
-  defaultCombosBit     DefaultCombo[] @relation("Bit")
-
-  combosBlade   Combo[] @relation("Blade")
-  combosRatchet Combo[] @relation("Ratchet")
-  combosBit     Combo[] @relation("Bit")
+  images     BladeImage[]
+  beyblades   Beyblade[]
+  combos      Combo[]
 }
 
-model PartImage {
+model Ratchet {
+  id   Int      @id @default(autoincrement())
+  name String
+
+  images     RatchetImage[]
+  beyblades   Beyblade[]
+  combos      Combo[]
+}
+
+model Bit {
+  id   Int      @id @default(autoincrement())
+  name String
+
+  images     BitImage[]
+  beyblades   Beyblade[]
+  combos      Combo[]
+}
+
+model BladeImage {
   id     Int   @id @default(autoincrement())
-  part   Part  @relation(fields: [partId], references: [id])
-  partId Int
+  blade  Blade @relation(fields: [bladeId], references: [id])
+  bladeId Int
   image  Bytes
+}
+
+model RatchetImage {
+  id     Int   @id @default(autoincrement())
+  ratchet  Ratchet @relation(fields: [ratchetId], references: [id])
+  ratchetId Int
+  image  Bytes
+}
+
+model BitImage {
+  id     Int   @id @default(autoincrement())
+  bit  Bit @relation(fields: [bitId], references: [id])
+  bitId Int
+  image  Bytes
+}
+
+model Beyblade {
+  id          Int      @id @default(autoincrement())
+  attack      Int
+  stamina     Int
+  defesa      Int
+  equilibrio  Int
+  blade       Blade    @relation(fields: [bladeId], references: [id])
+  bladeId     Int
+  ratchet     Ratchet  @relation(fields: [ratchetId], references: [id])
+  ratchetId   Int
+  bit         Bit      @relation(fields: [bitId], references: [id])
+  bitId       Int
+  createdAt   DateTime @default(now())
+  collections UserCollection[]
+}
+
+model UserCollection {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  beyblade  Beyblade @relation(fields: [beybladeId], references: [id])
+  beybladeId Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, beybladeId])
 }
 
 model Combo {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
-  blade     Part     @relation("Blade", fields: [bladeId], references: [id])
+  blade     Blade    @relation(fields: [bladeId], references: [id])
   bladeId   Int
-  ratchet   Part     @relation("Ratchet", fields: [ratchetId], references: [id])
+  ratchet   Ratchet  @relation(fields: [ratchetId], references: [id])
   ratchetId Int
-  bit       Part     @relation("Bit", fields: [bitId], references: [id])
+  bit       Bit      @relation(fields: [bitId], references: [id])
   bitId     Int
+  likes     Int      @default(0)
   createdAt DateTime @default(now())
 }
 
-model DefaultCombo {
-  id        Int  @id @default(autoincrement())
-  blade     Part @relation("Blade", fields: [bladeId], references: [id])
-  bladeId   Int
-  ratchet   Part @relation("Ratchet", fields: [ratchetId], references: [id])
-  ratchetId Int
-  bit       Part @relation("Bit", fields: [bitId], references: [id])
-  bitId     Int
-}
+model ComboLike {
+  id        Int      @id @default(autoincrement())
+  comboId   Int
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-enum PartType {
-  Blade
-  Ratchet
-  Bit
+  @@unique([comboId, userId])
+  @@index([comboId])
+  @@index([userId])
 }
