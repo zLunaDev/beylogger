@@ -1,4 +1,4 @@
-# 🌀 Beylogger V2.0 🌀
+# 🌀 Beylogger 🌀
 
 <div align="center">
   <img src="https://img.shields.io/badge/status-spinning%20wildly-blue" alt="Status: Spinning Wildly">
