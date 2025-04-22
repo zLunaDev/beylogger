@@ -132,7 +132,7 @@ export default function MeusCombosPage() {
       <header className="bg-black text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="text-3xl font-bold tracking-wider">BEYLOG</div>
+            <Link href="/dashboard" className="text-3xl font-bold tracking-wider">BEYLOG</Link>
 
             <nav className="hidden md:flex space-x-1">
               <Link href="/colecao" className="px-6 py-4 text-lg font-medium border-r border-white">
@@ -238,4 +238,4 @@ export default function MeusCombosPage() {
       <footer className="h-16 bg-black"></footer>
     </main>
   )
-} 
+}

@@ -37,13 +37,39 @@ interface Beyblade {
   equilibrio: number
 }
 
+interface User {
+  id: number
+  email: string
+  username: string | null
+  isAdmin: boolean
+}
+
 export default function ColecaoPage() {
   const router = useRouter()
   const [beyblades, setBeyblades] = useState<Beyblade[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('/api/auth/me', {
+          credentials: 'include'
+        })
+
+        if (!response.ok) {
+          throw new Error('Não autorizado')
+        }
+
+        const data = await response.json()
+        setUser(data.user)
+      } catch (error) {
+        console.error('Erro ao carregar dados do usuário:', error)
+        router.push('/login')
+      }
+    }
+
     const fetchBeyblades = async () => {
       try {
         setLoading(true)
@@ -69,8 +95,9 @@ export default function ColecaoPage() {
       }
     }
 
+    fetchUser()
     fetchBeyblades()
-  }, [])
+  }, [router])
 
   if (loading) {
     return (
@@ -98,7 +125,7 @@ export default function ColecaoPage() {
       <header className="bg-black text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="text-3xl font-bold tracking-wider">BEYLOG</div>
+            <Link href="/dashboard" className="text-3xl font-bold tracking-wider">BEYLOG</Link>
 
             <nav className="hidden md:flex space-x-1">
               <Link href="/dashboard" className="px-6 py-4 text-lg font-medium border-r border-white">
@@ -110,12 +137,9 @@ export default function ColecaoPage() {
             </nav>
 
             <div className="flex items-center space-x-1">
-              <Link href="/perfil" className="px-6 py-4 text-lg font-medium border-l border-white">
-                PERFIL
-              </Link>
-              <Link href="/logout" className="px-6 py-4 text-lg font-medium border-l border-white">
-                SAIR
-              </Link>
+              <span className="px-6 py-4 text-lg font-medium border-l border-white">
+                {user?.username || 'Blader'}
+              </span>
             </div>
           </div>
         </div>
