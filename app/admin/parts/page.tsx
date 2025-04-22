@@ -68,13 +68,13 @@ export default function PartsManagement() {
     }
   }
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: number, type: 'blade' | 'ratchet' | 'bit') => {
     if (!confirm('Tem certeza que deseja deletar esta peça?')) {
       return
     }
 
     try {
-      const response = await fetch(`/api/parts/${id}`, {
+      const response = await fetch(`/api/parts/${id}?type=${type}`, {
         method: 'DELETE'
       })
 
@@ -158,7 +158,7 @@ export default function PartsManagement() {
                     </div>
                   </div>
                   <button
-                    onClick={() => handleDelete(blade.id)}
+                    onClick={() => handleDelete(blade.id, 'blade')}
                     className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
                   >
                     Deletar
@@ -193,7 +193,7 @@ export default function PartsManagement() {
                     </div>
                   </div>
                   <button
-                    onClick={() => handleDelete(ratchet.id)}
+                    onClick={() => handleDelete(ratchet.id, 'ratchet')}
                     className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
                   >
                     Deletar
@@ -228,7 +228,7 @@ export default function PartsManagement() {
                     </div>
                   </div>
                   <button
-                    onClick={() => handleDelete(bit.id)}
+                    onClick={() => handleDelete(bit.id, 'bit')}
                     className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
                   >
                     Deletar
@@ -241,4 +241,4 @@ export default function PartsManagement() {
       </div>
     </main>
   )
-} 
+}
